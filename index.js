@@ -1,5 +1,5 @@
-var webshot = require('webshot');
-var fs      = require('fs'),
+var webshot = require('webshot'),
+fs      = require('fs'),
 loki = require('lokijs'),
 db = new loki('db.json');
 
@@ -21,7 +21,7 @@ var port = process.env.PORT || 8080;
 
 // start the server
 app.listen(port);
-console.log('Server started! At http://localhost:' + port);
+console.log('Server started!');
 
 app.get('/api/:url', function(req, res) {
 
@@ -46,7 +46,9 @@ app.get('/api/:url', function(req, res) {
 			var cachedImages = view.data();
 			if(cachedImages.length){
 				var filename = hash(cachedImages[0].time+cachedImages[0].url)+'.png';
-				res.send(folderPath+filename);
+
+				//final return
+				returnFile(res, folderPath+filename);
 			}else{
 				var filename = hash(timestamp+requestURL)+'.png';
 
@@ -63,9 +65,8 @@ app.get('/api/:url', function(req, res) {
 					});
 					db.saveDatabase();
 
-
-
-					res.send(folderPath+filename);
+					//final return
+					returnFile(res, folderPath+filename);
 				});
 			}
 			});
@@ -83,7 +84,6 @@ function openFolder(timestamp, callback){
 	var timestamp = Math.round(timestamp/1000);
 	var path = './cached_images/'+timestamp;
 
-	var fs = require('fs');
 	//check if path exists
 	try {
 	    // Query the entry
@@ -117,6 +117,15 @@ function openFolder(timestamp, callback){
 
 		
 	}
+}
+
+
+function returnFile(result, path){
+	fs.readFile(path, function(err, data) {
+	  if (err) throw err; // Fail if the file can't be read.
+	    result.writeHead(200, {'Content-Type': 'image/png'});
+	    result.end(data); // Send the file data to the browser.
+	});
 }
 
 
