@@ -25,7 +25,7 @@ console.log('Server started!');
 
 app.get('/api/:url', function(req, res) {
 
-		var requestURL = 'faz.net';
+		var requestURL = req.params.url;
 		var timestamp = new Date().getTime()/1000;
 		openFolder(timestamp, function(folderPath){
 			db.loadDatabase({}, function () {
@@ -52,7 +52,16 @@ app.get('/api/:url', function(req, res) {
 			}else{
 				var filename = hash(timestamp+requestURL)+'.png';
 
-				webshot(requestURL, folderPath+filename, function(err) {
+
+				var options = {
+				  shotSize: {
+				    width: 1024
+				  , height: 'all'
+				  }
+				}
+
+
+				webshot(requestURL, folderPath+filename, options, function(err) {
 				  var cachedImages = db.getCollection('cachedImages');
 				  //var removalView = cachedImages.addDynamicView('unsableCachedPictures'); 
 					cachedImages.removeWhere(function (obj) {
