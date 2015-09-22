@@ -27,6 +27,9 @@ console.log('Server started!');
 app.get('/api/:url', function(req, res) {
 
 		var requestURL = req.params.url;
+
+		console.log(requestURL);
+
 		var timestamp = new Date().getTime()/1000;
 		openFolder(timestamp, function(folderPath){
 			db.loadDatabase({}, function () {
