@@ -12,6 +12,7 @@ db = new loki('db.json');
 
 
 
+
 // grab the packages we need
 var express = require('express');
 var app = express();
@@ -136,9 +137,6 @@ function returnFile(result, path){
 	    result.end(data); // Send the file data to the browser.
 	});
 }
-
-
-
 
 function hash(string){
 	  var hash = 0, i, chr, len;
